@@ -94,9 +94,10 @@
     <button class="btn-save" onclick="addDish()">Aggiungi Piatto</button>
   </div>
 
-  <!-- Aggiungi Ciccio -->
+  <!-- Aggiungi Blocco Griglia Ciccio -->
   <div class="section-box" style="background:#fef3c7; border-color:#f59e0b;">
-    <h3>🟡 Aggiungi Ingrediente per "COMPONI IL TUO CICCIO"</h3>
+    <h3>🟡 Aggiungi Ingrediente per Box "COMPONI IL TUO CICCIO"</h3>
+    <div class="form-group"><label>Titolo del Box (es. COMPONI IL TUO CICCIO):</label><input type="text" id="ciccio-box-title" value="COMPONI IL TUO CICCIO"></div>
     <div class="form-group"><label>Colonna:</label>
       <select id="ciccio-col">
         <option value="1">Colonna 1</option>
@@ -106,7 +107,7 @@
     </div>
     <div class="form-group"><label>Nome Ingrediente:</label><input type="text" id="ciccio-item-name" placeholder="es. Prosciutto Cotto"></div>
     <div class="form-group"><label>Prezzo Extra (€) [lascia vuoto se incluso]:</label><input type="text" id="ciccio-item-price" placeholder="es. 1.50"></div>
-    <button class="btn-save" style="background:#d98428;" onclick="addCiccioIngredient()">Aggiungi Ingrediente Ciccio</button>
+    <button class="btn-save" style="background:#d98428;" onclick="addCiccioIngredient()">Aggiungi Ingrediente Griglia</button>
   </div>
 
   <!-- Aggiungi Box di Testo / Allergeni -->
@@ -240,7 +241,7 @@
     let categories = [];
     if(appData.menu) {
       appData.menu.forEach(item => {
-        if(item.category && item.type !== 'textbox' && item.type !== 'allergen' && item.type !== 'ciccio') {
+        if(item.category && item.type !== 'textbox' && item.type !== 'allergen' && item.type !== 'cicciogrid') {
           if(!categories.includes(item.category)) categories.push(item.category);
         }
       });
@@ -326,7 +327,7 @@
             <div style="font-size:13px; color:#555; margin:0; background:#fff; padding:8px; border-radius:4px;">${group.content}</div>
           </div>
         `;
-      } else if (group.type === 'ciccio') {
+      } else if (group.type === 'cicciogrid') {
         let colsHtml = '';
         for(let i=1; i<=3; i++) {
           let itemsList = '';
@@ -350,14 +351,13 @@
         contentHtml = `
           <div style="margin-bottom:20px; background:#fffbeb; padding:12px; border:1px solid #f59e0b; border-radius:8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:2px solid #f59e0b; padding-bottom:6px;">
-              <h4 style="margin:0; color:#d97706;">🟡 SEZIONE SPECIALE: CICCIO</h4>
+              <h4 style="margin:0; color:#d97706;">🟡 GRIGLIA INGREDIENTI: ${group.title || 'COMPONI IL TUO CICCIO'}</h4>
               <div>
                 <button class="btn-action" onclick="moveCategory(${cIdx}, -1)">⬆️ Sposta</button>
                 <button class="btn-action" onclick="moveCategory(${cIdx}, 1)">⬇️ Sposta</button>
                 <button class="btn-delete" onclick="deleteGroup(${cIdx})">🗑️ Elimina</button>
               </div>
             </div>
-            <p style="font-size:13px; font-weight:600; margin-bottom:8px;">Base: ${group.baseName || 'BASE'} - ${group.basePrice || '7.00'} €</p>
             <div style="display:flex; gap:10px;">${colsHtml}</div>
           </div>
         `;
@@ -416,7 +416,7 @@
 
     if(!cat || !name || !price) return alert("Compila la categoria, il nome e il prezzo!");
 
-    let group = appData.menu.find(m => m.category === cat && m.type !== 'textbox' && m.type !== 'allergen' && m.type !== 'ciccio');
+    let group = appData.menu.find(m => m.category === cat && m.type !== 'textbox' && m.type !== 'allergen' && m.type !== 'cicciogrid');
     if(!group) { 
       group = { category: cat, dishes: [] }; 
       appData.menu.push(group); 
@@ -432,16 +432,19 @@
   }
 
   function addCiccioIngredient() {
+    const boxTitle = document.getElementById('ciccio-box-title').value.trim() || "COMPONI IL TUO CICCIO";
     const col = document.getElementById('ciccio-col').value;
     const name = document.getElementById('ciccio-item-name').value.trim();
     const price = document.getElementById('ciccio-item-price').value.trim();
 
-    if(!name) return alert("Inserisci il nome!");
+    if(!name) return alert("Inserisci il nome dell'ingrediente!");
 
-    let ciccioGroup = appData.menu.find(m => m.type === 'ciccio');
+    let ciccioGroup = appData.menu.find(m => m.type === 'cicciogrid');
     if(!ciccioGroup) {
-      ciccioGroup = { type: 'ciccio', category: 'CICCIO', baseName: 'BASE', basePrice: '7.00', col1: [], col2: [], col3: [] };
+      ciccioGroup = { type: 'cicciogrid', title: boxTitle, col1: [], col2: [], col3: [] };
       appData.menu.push(ciccioGroup);
+    } else {
+      ciccioGroup.title = boxTitle;
     }
 
     if(!ciccioGroup['col' + col]) ciccioGroup['col' + col] = [];
@@ -587,7 +590,7 @@
       dish.price = price;
       dish.ingredients = ing;
 
-      let targetGroup = appData.menu.find(m => m.category === newCat && m.type !== 'textbox' && m.type !== 'allergen' && m.type !== 'ciccio');
+      let targetGroup = appData.menu.find(m => m.category === newCat && m.type !== 'textbox' && m.type !== 'allergen' && m.type !== 'cicciogrid');
       if(!targetGroup) {
         targetGroup = { category: newCat, dishes: [] };
         appData.menu.push(targetGroup);
