@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -94,7 +95,7 @@
     <button class="btn-save" onclick="addDish()">Aggiungi Piatto</button>
   </div>
 
-  <!-- Aggiungi Ingrediente Ciccio (Automatico in coda) -->
+  <!-- Aggiungi Ingrediente Ciccio (Sequenziale Automatico) -->
   <div class="section-box" style="background:#fef3c7; border-color:#f59e0b;">
     <h3>🟡 Aggiungi Ingrediente per Box "COMPONI IL TUO CICCIO"</h3>
     <div class="form-group"><label>Titolo del Box:</label><input type="text" id="ciccio-box-title" value="COMPONI IL TUO CICCIO"></div>
@@ -332,8 +333,8 @@
             <div style="background:#fff; padding:6px 10px; margin-bottom:4px; border:1px solid #ddd; border-radius:4px; font-size:13px; display:flex; justify-content:space-between; align-items:center;">
               <span><strong>${item.name}</strong> ${item.price ? '(' + item.price + ' €)' : ''}</span>
               <div>
-                <button class="btn-action" style="padding:2px 6px; font-size:11px;" onclick="moveCiccioItem(${cIdx}, ${iIdx}, -1)" title="Sposta indietro / a sinistra">⬅️</button>
-                <button class="btn-action" style="padding:2px 6px; font-size:11px;" onclick="moveCiccioItem(${cIdx}, ${iIdx}, 1)" title="Sposta avanti / a destra">➡️</button>
+                <button class="btn-action" style="padding:2px 6px; font-size:11px;" onclick="moveCiccioItem(${cIdx}, ${iIdx}, -1)" title="Sposta indietro">⬅️</button>
+                <button class="btn-action" style="padding:2px 6px; font-size:11px;" onclick="moveCiccioItem(${cIdx}, ${iIdx}, 1)" title="Sposta avanti">➡️</button>
                 <button class="btn-delete" style="padding:2px 6px; font-size:11px;" onclick="deleteCiccioItem(${cIdx}, ${iIdx})">🗑️</button>
               </div>
             </div>
@@ -644,7 +645,7 @@
       if (!res.ok) throw new Error("Errore salvataggio");
       alert("Menù aggiornato e pubblicato con successo sul sito!");
     } catch (e) {
-      alert("Errore durante il salvataggio: " + e.message);
+      alert("Error durante il salvataggio: " + e.message);
     }
   }
 </script>
