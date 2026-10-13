@@ -46,7 +46,7 @@
     .dish-price { font-size: var(--price-size); color: var(--price-color); white-space: nowrap; }
     .dish-ingredients { font-size: var(--ingredients-size); color: var(--ingredients-color); margin-top: 4px; opacity: 0.9; }
     
-    .ciccio-section { margin-bottom: 32px; }
+    .ciccio-custom-section { margin-bottom: 32px; }
     .ciccio-box { background: rgba(255, 255, 255, 0.4); border: 1px solid var(--title-color); border-radius: 12px; padding: 16px; margin-top: 16px; }
     .ciccio-intro { font-size: 15px; font-weight: bold; color: var(--title-color); text-transform: uppercase; margin-bottom: 12px; text-align: center; }
     .ciccio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -129,15 +129,9 @@
             return;
           }
 
-          if (group.type === 'ciccio') {
-            const navLink = document.createElement('a');
-            navLink.className = 'cat-link';
-            navLink.href = '#' + catId;
-            navLink.innerText = 'CICCIO';
-            navContainer.appendChild(navLink);
-
+          if (group.type === 'cicciogrid') {
             const ciccioSection = document.createElement('section');
-            ciccioSection.className = 'ciccio-section';
+            ciccioSection.className = 'ciccio-custom-section';
             ciccioSection.id = catId;
 
             let col1Html = (group.col1 || []).map(i => `<div class="ciccio-item"><span class="dish-name">${i.name}</span>${i.price ? `<span class="dish-price">${i.price} €</span>` : ''}</div>`).join('');
@@ -145,15 +139,8 @@
             let col3Html = (group.col3 || []).map(i => `<div class="ciccio-item"><span class="dish-name">${i.name}</span>${i.price ? `<span class="dish-price">${i.price} €</span>` : ''}</div>`).join('');
 
             ciccioSection.innerHTML = `
-              <h2 class="category-header">CICCIO</h2>
-              <div class="dish-item">
-                <div class="dish-header">
-                  <span class="dish-name">${group.baseName || 'BASE'}</span>
-                  <span class="dish-price">${group.basePrice || '7.00'} €</span>
-                </div>
-              </div>
               <div class="ciccio-box">
-                <div class="ciccio-intro">COMPONI IL TUO CICCIO</div>
+                <div class="ciccio-intro">${group.title || 'COMPONI IL TUO CICCIO'}</div>
                 <div class="ciccio-grid">
                   <div>${col1Html}</div>
                   <div>${col2Html}</div>
