@@ -32,8 +32,6 @@
     .main-title { font-size: var(--menu-title-size); color: var(--title-color); text-transform: uppercase; letter-spacing: 2px; }
     
     .box-container { margin-bottom: 24px; font-size: 14px; line-height: 1.5; }
-    .box-container p, .box-container div { margin-bottom: 12px; }
-    .box-container p:last-child, .box-container div:last-child { margin-bottom: 0; }
     .box-bordered { background-color: rgba(255, 255, 255, 0.4); border: 1px solid var(--title-color); border-radius: 12px; padding: 16px 20px; text-align: center; }
     .box-plain { padding: 10px 0; text-align: center; }
 
@@ -142,16 +140,16 @@
             ciccioSection.className = 'ciccio-section';
             ciccioSection.id = catId;
 
-            let col1Html = (group.col1 || []).map(i => `<div class="ciccio-item"><span class="dish-name">${i.name}</span>${i.price ? `<span class="dish-price">€${i.price}</span>` : ''}</div>`).join('');
-            let col2Html = (group.col2 || []).map(i => `<div class="ciccio-item"><span class="dish-name">${i.name}</span>${i.price ? `<span class="dish-price">€${i.price}</span>` : ''}</div>`).join('');
-            let col3Html = (group.col3 || []).map(i => `<div class="ciccio-item"><span class="dish-name">${i.name}</span>${i.price ? `<span class="dish-price">€${i.price}</span>` : ''}</div>`).join('');
+            let col1Html = (group.col1 || []).map(i => `<div class="ciccio-item"><span class="dish-name">${i.name}</span>${i.price ? `<span class="dish-price">${i.price} €</span>` : ''}</div>`).join('');
+            let col2Html = (group.col2 || []).map(i => `<div class="ciccio-item"><span class="dish-name">${i.name}</span>${i.price ? `<span class="dish-price">${i.price} €</span>` : ''}</div>`).join('');
+            let col3Html = (group.col3 || []).map(i => `<div class="ciccio-item"><span class="dish-name">${i.name}</span>${i.price ? `<span class="dish-price">${i.price} €</span>` : ''}</div>`).join('');
 
             ciccioSection.innerHTML = `
               <h2 class="category-header">CICCIO</h2>
               <div class="dish-item">
                 <div class="dish-header">
                   <span class="dish-name">${group.baseName || 'BASE'}</span>
-                  <span class="dish-price">€ ${group.basePrice || '7.00'}</span>
+                  <span class="dish-price">${group.basePrice || '7.00'} €</span>
                 </div>
               </div>
               <div class="ciccio-box">
@@ -185,7 +183,7 @@
               <div class="dish-item">
                 <div class="dish-header">
                   <span class="dish-name">${dish.name}</span>
-                  <span class="dish-price">€ ${dish.price}</span>
+                  <span class="dish-price">${dish.price} €</span>
                 </div>
                 ${dish.ingredients ? `<div class="dish-ingredients">${dish.ingredients}</div>` : ''}
               </div>
