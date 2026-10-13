@@ -25,20 +25,38 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: var(--bg-color); font-family: var(--font-family); color: var(--dish-color); line-height: 1.4; padding-bottom: 60px; }
+    body { background-color: var(--bg-color); font-family: var(--font-family); color: var(--dish-color); line-height: 1.4; padding-top: 140px; padding-bottom: 60px; }
     .container { max-width: 700px; margin: 0 auto; padding: 20px 16px; }
-    .header { text-align: center; margin-bottom: 24px; }
-    .logo-img { max-width: 280px; width: 100%; height: auto; display: block; margin: 0 auto 12px auto; }
-    .main-title { font-size: var(--menu-title-size); color: var(--title-color); text-transform: uppercase; letter-spacing: 2px; }
     
-    .box-container { margin-bottom: 24px; font-size: 14px; line-height: 1.5; }
-    .box-bordered { background-color: rgba(255, 255, 255, 0.4); border: 1px solid var(--title-color); border-radius: 12px; padding: 16px 20px; text-align: center; }
-    .box-plain { padding: 10px 0; text-align: center; }
+    /* Header fisso in alto con effetto rimpicciolimento allo scroll */
+    .header { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      background-color: var(--bg-color); 
+      text-align: center; 
+      padding: 12px 16px; 
+      z-index: 1000; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+      transition: all 0.3s ease;
+    }
+    .logo-img { max-width: 220px; width: 100%; height: auto; display: block; margin: 0 auto 6px auto; transition: max-width 0.3s ease; }
+    .main-title { font-size: 28px; color: var(--title-color); text-transform: uppercase; letter-spacing: 2px; transition: font-size 0.3s ease; }
+    
+    /* Stato compatto quando si scorre la pagina */
+    body.scrolled .header { padding: 6px 16px; }
+    body.scrolled .logo-img { max-width: 120px; margin-bottom: 2px; }
+    body.scrolled .main-title { font-size: 18px; }
 
-    .category-nav-wrapper { position: sticky; top: 0; background-color: var(--bg-color); padding: 10px 0; z-index: 100; margin-bottom: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .category-nav { display: flex; gap: 10px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
-    .cat-link { background-color: rgba(217, 132, 40, 0.15); color: var(--category-color); padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600; border: 1px solid var(--category-color); }
-    .macro-category { margin-bottom: 32px; }
+    /* Navigazione categorie subito sotto l'header fisso */
+    .category-nav-wrapper { position: fixed; top: 110px; left: 0; width: 100%; background-color: var(--bg-color); padding: 8px 16px; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: top 0.3s ease; }
+    body.scrolled .category-nav-wrapper { top: 75px; }
+
+    .category-nav { display: flex; gap: 10px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; max-width: 700px; margin: 0 auto; }
+    .cat-link { background-color: rgba(217, 132, 40, 0.15); color: var(--category-color); padding: 6px 14px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 600; border: 1px solid var(--category-color); }
+    
+    .macro-category { margin-top: 32px; margin-bottom: 32px; scroll-margin-top: 140px; }
     .category-header { font-size: var(--category-size); color: var(--category-color); text-transform: uppercase; border-bottom: 2px solid var(--category-color); padding-bottom: 6px; margin-bottom: 16px; }
     .dish-item { margin-bottom: 18px; }
     .dish-header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
@@ -46,31 +64,31 @@
     .dish-price { font-size: var(--price-size); color: var(--price-color); white-space: nowrap; }
     .dish-ingredients { font-size: var(--ingredients-size); color: var(--ingredients-color); margin-top: 4px; opacity: 0.9; }
     
-    .ciccio-custom-section { margin-bottom: 32px; }
+    .box-container { margin-bottom: 24px; font-size: 14px; line-height: 1.5; }
+    .box-bordered { background-color: rgba(255, 255, 255, 0.4); border: 1px solid var(--title-color); border-radius: 12px; padding: 16px 20px; text-align: center; }
+    .box-plain { padding: 10px 0; text-align: center; }
+
+    .ciccio-custom-section { margin-bottom: 32px; scroll-margin-top: 140px; }
     .ciccio-box { background: rgba(255, 255, 255, 0.4); border: 1px solid var(--title-color); border-radius: 12px; padding: 16px; margin-top: 16px; }
     .ciccio-intro { font-size: 15px; font-weight: bold; color: var(--title-color); text-transform: uppercase; margin-bottom: 12px; text-align: center; }
     
-    /* Griglia automatica a 3 colonne con flusso orizzontale */
-    .ciccio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 20px; align-items: start; }
-    .ciccio-item { font-size: 14px; display: flex; justify-content: space-between; gap: 8px; }
+    /* Griglia a 3 colonne forzata anche su smartphone */
+    .ciccio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px 16px; align-items: start; }
+    .ciccio-item { font-size: 13px; display: flex; justify-content: space-between; gap: 4px; }
     .empty-msg { text-align: center; font-style: italic; margin-top: 40px; opacity: 0.8; }
-
-    @media (max-width: 600px) {
-      .ciccio-grid { grid-template-columns: 1fr; gap: 12px; }
-    }
   </style>
 </head>
 <body>
+  <header class="header">
+    <img id="menu-logo" class="logo-img" src="SENZA FRETTA LOGO ORIZZONTALE.png" alt="Senza Fretta Logo">
+    <h1 class="main-title">MENÙ</h1>
+  </header>
+
+  <div class="category-nav-wrapper">
+    <nav class="category-nav" id="category-nav-links"></nav>
+  </div>
+
   <div class="container">
-    <header class="header">
-      <img id="menu-logo" class="logo-img" src="SENZA FRETTA LOGO ORIZZONTALE.png" alt="Senza Fretta Logo">
-      <h1 class="main-title">MENÙ</h1>
-    </header>
-
-    <div class="category-nav-wrapper">
-      <nav class="category-nav" id="category-nav-links"></nav>
-    </div>
-
     <main id="menu-content">
       <div class="empty-msg">Caricamento menù in corso...</div>
     </main>
@@ -79,6 +97,15 @@
   <script>
     const BIN_ID = "6acdf4c6ac6210605a2d027e";
     const API_KEY = "$2a$10$D6x0TfYD9PWKxlYRBVPw3OgUPIunR5a2qDZdw9Lsw7jZ7d611Qu/6";
+
+    // Gestione effetto rimpicciolimento header allo scroll
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 40) {
+        document.body.classList.add('scrolled');
+      } else {
+        document.body.classList.remove('scrolled');
+      }
+    });
 
     async function loadMenu() {
       try {
@@ -122,6 +149,7 @@
             const hasBorder = group.showBorder !== false;
             const boxDiv = document.createElement('div');
             boxDiv.className = `box-container ${hasBorder ? 'box-bordered' : 'box-plain'}`;
+            boxDiv.id = catId;
 
             boxDiv.innerHTML = `
               ${group.title ? `<strong style="display:block; margin-bottom:8px; text-transform:uppercase; font-size:16px;">${group.title}</strong>` : ''}
@@ -136,7 +164,6 @@
             ciccioSection.className = 'ciccio-custom-section';
             ciccioSection.id = catId;
 
-            // Supporto retrocompatibile se esistevano le vecchie colonne col1/col2/col3 o il nuovo elenco items
             let items = group.items || [];
             if(items.length === 0 && (group.col1 || group.col2 || group.col3)) {
               items = [...(group.col1 || []), ...(group.col2 || []), ...(group.col3 || [])];
@@ -158,6 +185,13 @@
               </div>
             `;
             menuContainer.appendChild(ciccioSection);
+            
+            // Aggiungiamo il link di navigazione rapida anche per la sezione Ciccio
+            const navLink = document.createElement('a');
+            navLink.className = 'cat-link';
+            navLink.href = '#' + catId;
+            navLink.innerText = group.title || 'CICCIO';
+            navContainer.appendChild(navLink);
             return;
           }
 
