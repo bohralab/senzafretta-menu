@@ -19,6 +19,11 @@
     .backup-bar { display: flex; gap: 10px; justify-content: space-between; background: #eef2e6; padding: 12px; border-radius: 8px; align-items: center; margin-bottom: 20px; }
     .style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
+    /* Stile anteprima griglia Ciccio nel pannello (uguale al sito) */
+    .admin-ciccio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; align-items: start; margin-top: 8px; }
+    .admin-ciccio-col { background: #fff; padding: 8px; border: 1px solid #e3d2b8; border-radius: 6px; min-height: 80px; display: flex; flex-direction: column; gap: 6px; }
+    .admin-ciccio-item { background: #faf5ed; padding: 6px 8px; border: 1px solid #ebdcc5; border-radius: 4px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; gap: 4px; }
+
     /* Editor WYSIWYG */
     .editor-toolbar { background: #e2e8f0; padding: 6px; border-top-left-radius: 6px; border-top-right-radius: 6px; border: 1px solid #cbd5e1; border-bottom: none; display: flex; gap: 6px; flex-wrap: wrap; }
     .editor-toolbar button { background: #fff; border: 1px solid #94a3b8; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
@@ -94,7 +99,7 @@
     <button class="btn-save" onclick="addDish()">Aggiungi Piatto</button>
   </div>
 
-  <!-- Aggiungi Ingrediente Ciccio (Sequenziale Automatico) -->
+  <!-- Aggiungi Ingrediente Ciccio -->
   <div class="section-box" style="background:#fef3c7; border-color:#f59e0b;">
     <h3>🟡 Aggiungi Ingrediente per Box "COMPONI IL TUO CICCIO"</h3>
     <div class="form-group"><label>Titolo del Box:</label><input type="text" id="ciccio-box-title" value="COMPONI IL TUO CICCIO"></div>
@@ -146,6 +151,7 @@
   <h3>✏️ Modifica Elemento</h3>
   <input type="hidden" id="edit-c-idx">
   <input type="hidden" id="edit-d-idx">
+  <input type="hidden" id="edit-item-idx">
   <input type="hidden" id="edit-type">
   
   <div class="form-group" id="edit-cat-group">
@@ -326,18 +332,27 @@
         }
         if(!group.items) group.items = [];
 
-        let itemsList = '';
-        group.items.forEach((item, iIdx) => {
-          itemsList += `
-            <div style="background:#fff; padding:6px 10px; margin-bottom:4px; border:1px solid #ddd; border-radius:4px; font-size:13px; display:flex; justify-content:space-between; align-items:center;">
-              <span><strong>${item.name}</strong> ${item.price ? '(' + item.price + ' €)' : ''}</span>
+        // Suddividiamo in 3 colonne simulate esattamente come nel sito finale
+        let cols = [[], [], []];
+        group.items.forEach((item, originalIdx) => {
+          let colIndex = originalIdx % 3;
+          cols[colIndex].push({ ...item, originalIdx });
+        });
+
+        let colHtmls = cols.map(colItems => {
+          return colItems.map(item => `
+            <div class="admin-ciccio-item">
               <div>
-                <button class="btn-action" style="padding:2px 6px; font-size:11px;" onclick="moveCiccioItem(${cIdx}, ${iIdx}, -1)" title="Sposta indietro">⬅️</button>
-                <button class="btn-action" style="padding:2px 6px; font-size:11px;" onclick="moveCiccioItem(${cIdx}, ${iIdx}, 1)" title="Sposta avanti">➡️</button>
-                <button class="btn-delete" style="padding:2px 6px; font-size:11px;" onclick="deleteCiccioItem(${cIdx}, ${iIdx})">🗑️</button>
+                <strong>${item.name}</strong> ${item.price ? '(' + item.price + ' €)' : ''}
+              </div>
+              <div style="display:flex; gap:2px;">
+                <button class="btn-action" style="padding:2px 5px; font-size:10px;" onclick="moveCiccioItem(${cIdx}, ${item.originalIdx}, -1)" title="Sposta indietro">⬅️</button>
+                <button class="btn-action" style="padding:2px 5px; font-size:10px;" onclick="moveCiccioItem(${cIdx}, ${item.originalIdx}, 1)" title="Sposta avanti">➡️</button>
+                <button class="btn-action" style="padding:2px 5px; font-size:10px; background:#475569;" onclick="openEditCiccioItem(${cIdx}, ${item.originalIdx})" title="Modifica ingrediente">✏️</button>
+                <button class="btn-delete" style="padding:2px 5px; font-size:10px;" onclick="deleteCiccioItem(${cIdx}, ${item.originalIdx})">🗑️</button>
               </div>
             </div>
-          `;
+          `).join('');
         });
 
         contentHtml = `
@@ -350,7 +365,11 @@
                 <button class="btn-delete" onclick="deleteGroup(${cIdx})">🗑️ Elimina Blocco</button>
               </div>
             </div>
-            <div style="margin-top:6px;">${itemsList || '<i style="font-size:12px;color:#777;">Nessun ingrediente inserito.</i>'}</div>
+            <div class="admin-ciccio-grid">
+              <div class="admin-ciccio-col">${colHtmls[0] || '<i style="font-size:11px;color:#888;">Colonna 1 vuota</i>'}</div>
+              <div class="admin-ciccio-col">${colHtmls[1] || '<i style="font-size:11px;color:#888;">Colonna 2 vuota</i>'}</div>
+              <div class="admin-ciccio-col">${colHtmls[2] || '<i style="font-size:11px;color:#888;">Colonna 3 vuota</i>'}</div>
+            </div>
           </div>
         `;
       } else {
@@ -533,6 +552,24 @@
     document.getElementById('edit-modal').style.display = 'block';
   }
 
+  function openEditCiccioItem(cIdx, itemIdx) {
+    const item = appData.menu[cIdx].items[itemIdx];
+    document.getElementById('edit-c-idx').value = cIdx;
+    document.getElementById('edit-item-idx').value = itemIdx;
+    document.getElementById('edit-type').value = 'ciccioitem';
+    
+    document.getElementById('edit-cat-group').style.display = 'none';
+    document.getElementById('edit-name-group').style.display = 'block';
+    document.getElementById('edit-price-group').style.display = 'block';
+    document.getElementById('edit-ing-group').style.display = 'none';
+    document.getElementById('edit-border-group').style.display = 'none';
+    
+    document.querySelector('#edit-name-group label').innerText = "Nome Ingrediente:";
+    document.getElementById('edit-name').value = item.name;
+    document.getElementById('edit-price').value = item.price || '';
+    document.getElementById('edit-modal').style.display = 'block';
+  }
+
   function openEditBox(cIdx) {
     const g = appData.menu[cIdx];
     document.getElementById('edit-c-idx').value = cIdx;
@@ -591,6 +628,17 @@
         appData.menu.push(targetGroup);
       }
       targetGroup.dishes.push(dish);
+
+    } else if (type === 'ciccioitem') {
+      const itemIdx = parseInt(document.getElementById('edit-item-idx').value);
+      const name = document.getElementById('edit-name').value.trim();
+      const price = document.getElementById('edit-price').value.trim();
+
+      if(!name) return alert("Inserisci il nome dell'ingrediente!");
+
+      appData.menu[cIdx].items[itemIdx].name = name;
+      appData.menu.items = appData.menu[cIdx].items; // safety
+      appData.menu[cIdx].items[itemIdx].price = price;
 
     } else if (type === 'textbox' || type === 'allergen') {
       appData.menu[cIdx].title = document.getElementById('edit-name').value.trim();
