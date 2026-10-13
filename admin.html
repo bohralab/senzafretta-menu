@@ -334,7 +334,7 @@
             group['col' + i].forEach((item, iIdx) => {
               itemsList += `
                 <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #ddd; border-radius:4px; font-size:12px; display:flex; justify-content:space-between; align-items:center;">
-                  <span>${item.name} ${item.price ? '(+€' + item.price + ')' : ''}</span>
+                  <span>${item.name} ${item.price ? '(' + item.price + ' €)' : ''}</span>
                   <div>
                     <button class="btn-action" style="padding:2px 6px; font-size:10px;" onclick="moveCiccioItem(${cIdx}, ${i}, ${iIdx}, -1)">⬆️</button>
                     <button class="btn-action" style="padding:2px 6px; font-size:10px;" onclick="moveCiccioItem(${cIdx}, ${i}, ${iIdx}, 1)">⬇️</button>
@@ -357,7 +357,7 @@
                 <button class="btn-delete" onclick="deleteGroup(${cIdx})">🗑️ Elimina</button>
               </div>
             </div>
-            <p style="font-size:13px; font-weight:600; margin-bottom:8px;">Base: ${group.baseName || 'BASE'} - €${group.basePrice || '7.00'}</p>
+            <p style="font-size:13px; font-weight:600; margin-bottom:8px;">Base: ${group.baseName || 'BASE'} - ${group.basePrice || '7.00'} €</p>
             <div style="display:flex; gap:10px;">${colsHtml}</div>
           </div>
         `;
@@ -368,7 +368,7 @@
             dishesHtml += `
               <div class="item-card">
                 <div>
-                  <strong>${d.name}</strong> - €${d.price}
+                  <strong>${d.name}</strong> - ${d.price} €
                   ${d.ingredients ? `<br><small style="color:#666;">${d.ingredients}</small>` : ''}
                 </div>
                 <div>
