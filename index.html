@@ -50,9 +50,8 @@
     .ciccio-box { background: rgba(255, 255, 255, 0.4); border: 1px solid var(--title-color); border-radius: 12px; padding: 16px; margin-top: 16px; }
     .ciccio-intro { font-size: 15px; font-weight: bold; color: var(--title-color); text-transform: uppercase; margin-bottom: 12px; text-align: center; }
     
-    /* Griglia a 3 colonne rigide */
-    .ciccio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start; }
-    .ciccio-col { display: flex; flex-direction: column; gap: 6px; }
+    /* Griglia automatica a 3 colonne con flusso orizzontale */
+    .ciccio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 20px; align-items: start; }
     .ciccio-item { font-size: 14px; display: flex; justify-content: space-between; gap: 8px; }
     .empty-msg { text-align: center; font-style: italic; margin-top: 40px; opacity: 0.8; }
 
@@ -137,17 +136,24 @@
             ciccioSection.className = 'ciccio-custom-section';
             ciccioSection.id = catId;
 
-            let col1Html = (group.col1 || []).map(i => `<div class="ciccio-item"><span class="dish-name">${i.name}</span>${i.price ? `<span class="dish-price">${i.price} €</span>` : ''}</div>`).join('');
-            let col2Html = (group.col2 || []).map(i => `<div class="ciccio-item"><span class="dish-name">${i.name}</span>${i.price ? `<span class="dish-price">${i.price} €</span>` : ''}</div>`).join('');
-            let col3Html = (group.col3 || []).map(i => `<div class="ciccio-item"><span class="dish-name">${i.name}</span>${i.price ? `<span class="dish-price">${i.price} €</span>` : ''}</div>`).join('');
+            // Supporto retrocompatibile se esistevano le vecchie colonne col1/col2/col3 o il nuovo elenco items
+            let items = group.items || [];
+            if(items.length === 0 && (group.col1 || group.col2 || group.col3)) {
+              items = [...(group.col1 || []), ...(group.col2 || []), ...(group.col3 || [])];
+            }
+
+            let itemsHtml = items.map(i => `
+              <div class="ciccio-item">
+                <span class="dish-name">${i.name}</span>
+                ${i.price ? `<span class="dish-price">${i.price} €</span>` : ''}
+              </div>
+            `).join('');
 
             ciccioSection.innerHTML = `
               <div class="ciccio-box">
                 <div class="ciccio-intro">${group.title || 'COMPONI IL TUO CICCIO'}</div>
                 <div class="ciccio-grid">
-                  <div class="ciccio-col">${col1Html}</div>
-                  <div class="ciccio-col">${col2Html}</div>
-                  <div class="ciccio-col">${col3Html}</div>
+                  ${itemsHtml}
                 </div>
               </div>
             `;
