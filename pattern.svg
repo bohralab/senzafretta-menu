@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+  <!-- Piastrella ripetibile 240x240, sfondo trasparente. Nulla tocca i bordi, quindi si ripete senza giunture. -->
+  <g id="arancio" fill="none" stroke="#d98428" stroke-opacity="0.15" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Fetta di pizza -->
+    <g id="fetta" transform="translate(120,118) rotate(20)">
+      <path d="M-15,-12 Q0,-19 15,-12 L0,19 Z"/>
+      <path d="M-12,-8 Q0,-14 12,-8"/>
+      <circle cx="-3" cy="-1" r="2.5"/>
+      <circle cx="4" cy="-4" r="2"/>
+      <circle cx="1" cy="8" r="2"/>
+    </g>
+    <!-- Pomodoro -->
+    <g id="pomodoro" transform="translate(180,42) rotate(10)">
+      <circle r="12"/>
+      <path d="M-6,-10 L0,-6 L6,-10 M0,-6 L0,-15 M0,-13 Q5,-17 9,-14"/>
+    </g>
+    <!-- Fiamma del forno -->
+    <g id="fiamma" transform="translate(42,172) rotate(-8)">
+      <path d="M0,-18 C5,-9 12,-4 10,6 C9,14 -9,14 -10,6 C-11,-1 -4,-5 0,-18 Z"/>
+      <path d="M0,2 C3,5 4,8 0,11 C-4,8 -3,5 0,2 Z"/>
+    </g>
+    <!-- Boccale di birra -->
+    <g id="boccale" transform="translate(192,184) rotate(-6)">
+      <rect x="-10" y="-6" width="20" height="22" rx="3"/>
+      <path d="M10,-1 H15 Q19,-1 19,4 V8 Q19,13 15,13 H10"/>
+      <path d="M-11,-6 Q-13,-13 -6,-12 Q-4,-17 1,-14 Q6,-17 8,-12 Q13,-12 11,-6"/>
+      <path d="M-4,1 V10 M2,1 V10"/>
+    </g>
+  </g>
+
+  <g id="verde" fill="none" stroke="#52632d" stroke-opacity="0.14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Foglia di basilico -->
+    <g id="basilico" transform="translate(48,48) rotate(-25)">
+      <path d="M0,-17 C11,-9 11,9 0,17 C-11,9 -11,-9 0,-17 Z"/>
+      <path d="M0,-17 L0,22"/>
+      <path d="M0,-6 L6,-11 M0,2 L7,-3 M0,-6 L-6,-11 M0,2 L-7,-3"/>
+    </g>
+    <!-- Oliva -->
+    <g id="oliva" transform="translate(112,208) rotate(35)">
+      <ellipse rx="8" ry="11"/>
+      <circle r="3"/>
+      <path d="M0,-11 Q4,-16 9,-15"/>
+    </g>
+  </g>
+
+  <!-- Puntini di riempimento -->
+  <g id="puntini" fill="#d98428" fill-opacity="0.14" stroke="none">
+    <circle cx="96" cy="40" r="1.8"/>
+    <circle cx="222" cy="112" r="1.8"/>
+    <circle cx="16" cy="108" r="1.8"/>
+    <circle cx="150" cy="190" r="1.8"/>
+    <circle cx="80" cy="140" r="1.8"/>
+    <circle cx="150" cy="70" r="1.8"/>
+  </g>
+</svg>
