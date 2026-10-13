@@ -94,20 +94,13 @@
     <button class="btn-save" onclick="addDish()">Aggiungi Piatto</button>
   </div>
 
-  <!-- Aggiungi Blocco Griglia Ciccio -->
+  <!-- Aggiungi Ingrediente Ciccio (Automatico) -->
   <div class="section-box" style="background:#fef3c7; border-color:#f59e0b;">
     <h3>🟡 Aggiungi Ingrediente per Box "COMPONI IL TUO CICCIO"</h3>
-    <div class="form-group"><label>Titolo del Box (es. COMPONI IL TUO CICCIO):</label><input type="text" id="ciccio-box-title" value="COMPONI IL TUO CICCIO"></div>
-    <div class="form-group"><label>Colonna:</label>
-      <select id="ciccio-col">
-        <option value="1">Colonna 1</option>
-        <option value="2">Colonna 2</option>
-        <option value="3">Colonna 3</option>
-      </select>
-    </div>
+    <div class="form-group"><label>Titolo del Box:</label><input type="text" id="ciccio-box-title" value="COMPONI IL TUO CICCIO"></div>
     <div class="form-group"><label>Nome Ingrediente:</label><input type="text" id="ciccio-item-name" placeholder="es. Prosciutto Cotto"></div>
-    <div class="form-group"><label>Prezzo Extra (€) [lascia vuoto se incluso]:</label><input type="text" id="ciccio-item-price" placeholder="es. 1.50"></div>
-    <button class="btn-save" style="background:#d98428;" onclick="addCiccioIngredient()">Aggiungi Ingrediente Griglia</button>
+    <div class="form-group"><label>Prezzo (€) [lascia vuoto se incluso]:</label><input type="text" id="ciccio-item-price" placeholder="es. 1.50"></div>
+    <button class="btn-save" style="background:#d98428;" onclick="addCiccioIngredient()">Aggiungi in coda alla griglia</button>
   </div>
 
   <!-- Aggiungi Box di Testo / Allergeni -->
@@ -328,37 +321,37 @@
           </div>
         `;
       } else if (group.type === 'cicciogrid') {
-        let colsHtml = '';
-        for(let i=1; i<=3; i++) {
-          let itemsList = '';
-          if(group['col' + i]) {
-            group['col' + i].forEach((item, iIdx) => {
-              itemsList += `
-                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #ddd; border-radius:4px; font-size:12px; display:flex; justify-content:space-between; align-items:center;">
-                  <span>${item.name} ${item.price ? '(' + item.price + ' €)' : ''}</span>
-                  <div>
-                    <button class="btn-action" style="padding:2px 6px; font-size:10px;" onclick="moveCiccioItem(${cIdx}, ${i}, ${iIdx}, -1)">⬆️</button>
-                    <button class="btn-action" style="padding:2px 6px; font-size:10px;" onclick="moveCiccioItem(${cIdx}, ${i}, ${iIdx}, 1)">⬇️</button>
-                    <button class="btn-delete" style="padding:2px 6px; font-size:10px;" onclick="deleteCiccioItem(${cIdx}, ${i}, ${iIdx})">🗑️</button>
-                  </div>
-                </div>
-              `;
-            });
-          }
-          colsHtml += `<div style="flex:1; background:#fef9c3; padding:8px; border-radius:6px; border:1px solid #fde047;"><strong>Colonna ${i}</strong><div style="margin-top:6px;">${itemsList || '<i style="font-size:11px;color:#777;">Vuota</i>'}</div></div>`;
+        // Conversione retrocompatibile se c'erano le vecchie colonne col1/col2/col3
+        if(!group.items && (group.col1 || group.col2 || group.col3)) {
+          group.items = [...(group.col1 || []), ...(group.col2 || []), ...(group.col3 || [])];
         }
+        if(!group.items) group.items = [];
+
+        let itemsList = '';
+        group.items.forEach((item, iIdx) => {
+          itemsList += `
+            <div style="background:#fff; padding:6px 10px; margin-bottom:4px; border:1px solid #ddd; border-radius:4px; font-size:13px; display:flex; justify-content:space-between; align-items:center;">
+              <span><strong>${item.name}</strong> ${item.price ? '(' + item.price + ' €)' : ''}</span>
+              <div>
+                <button class="btn-action" style="padding:2px 6px; font-size:11px;" onclick="moveCiccioItem(${cIdx}, ${iIdx}, -1)" title="Sposta a sinistra / in alto">⬅️</button>
+                <button class="btn-action" style="padding:2px 6px; font-size:11px;" onclick="moveCiccioItem(${cIdx}, ${iIdx}, 1)" title="Sposta a destra / in basso">➡️</button>
+                <button class="btn-delete" style="padding:2px 6px; font-size:11px;" onclick="deleteCiccioItem(${cIdx}, ${iIdx})">🗑️</button>
+              </div>
+            </div>
+          `;
+        });
 
         contentHtml = `
           <div style="margin-bottom:20px; background:#fffbeb; padding:12px; border:1px solid #f59e0b; border-radius:8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:2px solid #f59e0b; padding-bottom:6px;">
               <h4 style="margin:0; color:#d97706;">🟡 GRIGLIA INGREDIENTI: ${group.title || 'COMPONI IL TUO CICCIO'}</h4>
               <div>
-                <button class="btn-action" onclick="moveCategory(${cIdx}, -1)">⬆️ Sposta</button>
-                <button class="btn-action" onclick="moveCategory(${cIdx}, 1)">⬇️ Sposta</button>
-                <button class="btn-delete" onclick="deleteGroup(${cIdx})">🗑️ Elimina</button>
+                <button class="btn-action" onclick="moveCategory(${cIdx}, -1)">⬆️ Sposta Blocco</button>
+                <button class="btn-action" onclick="moveCategory(${cIdx}, 1)">⬇️ Sposta Blocco</button>
+                <button class="btn-delete" onclick="deleteGroup(${cIdx})">🗑️ Elimina Blocco</button>
               </div>
             </div>
-            <div style="display:flex; gap:10px;">${colsHtml}</div>
+            <div style="margin-top:6px;">${itemsList || '<i style="font-size:12px;color:#777;">Nessun ingrediente inserito.</i>'}</div>
           </div>
         `;
       } else {
@@ -433,7 +426,6 @@
 
   function addCiccioIngredient() {
     const boxTitle = document.getElementById('ciccio-box-title').value.trim() || "COMPONI IL TUO CICCIO";
-    const col = document.getElementById('ciccio-col').value;
     const name = document.getElementById('ciccio-item-name').value.trim();
     const price = document.getElementById('ciccio-item-price').value.trim();
 
@@ -441,14 +433,20 @@
 
     let ciccioGroup = appData.menu.find(m => m.type === 'cicciogrid');
     if(!ciccioGroup) {
-      ciccioGroup = { type: 'cicciogrid', title: boxTitle, col1: [], col2: [], col3: [] };
+      ciccioGroup = { type: 'cicciogrid', title: boxTitle, items: [] };
       appData.menu.push(ciccioGroup);
     } else {
       ciccioGroup.title = boxTitle;
     }
 
-    if(!ciccioGroup['col' + col]) ciccioGroup['col' + col] = [];
-    ciccioGroup['col' + col].push({ name, price });
+    // Supporto retrocompatibile se aveva ancora col1/col2/col3
+    if(!ciccioGroup.items && (ciccioGroup.col1 || ciccioGroup.col2 || ciccioGroup.col3)) {
+      ciccioGroup.items = [...(ciccioGroup.col1 || []), ...(ciccioGroup.col2 || []), ...(ciccioGroup.col3 || [])];
+      delete ciccioGroup.col1; delete ciccioGroup.col2; delete ciccioGroup.col3;
+    }
+
+    if(!ciccioGroup.items) ciccioGroup.items = [];
+    ciccioGroup.items.push({ name, price });
 
     renderAdminList();
     document.getElementById('ciccio-item-name').value = '';
@@ -483,8 +481,8 @@
     renderAdminList();
   }
 
-  function deleteCiccioItem(cIdx, colNum, itemIdx) {
-    appData.menu[cIdx]['col' + colNum].splice(itemIdx, 1);
+  function deleteCiccioItem(cIdx, itemIdx) {
+    appData.menu[cIdx].items.splice(itemIdx, 1);
     renderAdminList();
   }
 
@@ -505,9 +503,8 @@
     renderAdminList();
   }
 
-  function moveCiccioItem(cIdx, colNum, itemIdx, direction) {
-    const colKey = 'col' + colNum;
-    const items = appData.menu[cIdx][colKey];
+  function moveCiccioItem(cIdx, itemIdx, direction) {
+    const items = appData.menu[cIdx].items;
     const targetIdx = itemIdx + direction;
     if (targetIdx < 0 || targetIdx >= items.length) return;
     const item = items.splice(itemIdx, 1)[0];
